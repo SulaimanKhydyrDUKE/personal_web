@@ -7,20 +7,19 @@ export default function Home() {
       <div className="flex items-start gap-4">
       <Image
       src="/profilephoto.png"
-      alt="Sulaiman Khydyr uulu"
+      alt="Sulaiman Khydyr"
       width={96}
       height={96}
       className="rounded-full flex-shrink-0"/>
       <div>
         <h1 className="text-4xl font-bold tracking-tight">
-        Sulaiman Khydyr uulu
+        Sulaiman Khydyr
         </h1>
         <p className="mt-4 text-lg text-gray-400">
-        CS + Math @ Duke University. I build AI systems and write about technology,
-        meaning, and ambition. I love building, and I am building myself everyday.  
+        CS + Math @ Duke University. I build algorithms and write about technology, motivations, and education.  
         
         </p>
-        
+
 
       </div>
       </div>
