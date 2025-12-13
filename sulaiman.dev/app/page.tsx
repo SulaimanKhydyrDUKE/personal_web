@@ -1,17 +1,29 @@
 import Link from "next/link"
-
+import Image from "next/image"
 
 export default function Home() {
   return (
     <main>
-      <h1 className="text-4xl font-bold tracking-tight">
+      <div className="flex items-start gap-4">
+      <Image
+      src="/profilephoto.png"
+      alt="Sulaiman Khydyr uulu"
+      width={96}
+      height={96}
+      className="rounded-full flex-shrink-0"/>
+      <div>
+        <h1 className="text-4xl font-bold tracking-tight">
         Sulaiman Khydyr uulu
-      </h1>
-
-      <p className="mt-4 text-lg text-gray-400">
+        </h1>
+        <p className="mt-4 text-lg text-gray-400">
         CS + Math @ Duke University. I build AI systems and write about technology,
         meaning, and ambition. I love building, and I am building myself everyday.  
-      </p>
+        
+        </p>
+        
+
+      </div>
+      </div>
       <section className="mt-12">
       <h2 className="text-xl font-semibold mb-4">
        GitHub Activity
