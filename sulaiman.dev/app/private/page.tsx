@@ -2,8 +2,10 @@ export default async function MetricsPage() {
     const from = "2025-02-01T00:00:00Z"
     const to = new Date().toISOString()
 
+    const THEIR_USERNAME = process.env.THEIR_GITHUB!
+
     const mycommits = await getCommitCount("SulaimanKhydyrDuke", from, to)
-    const theircommits = await getCommitCount("Khosilmurod", from, to)
+    const theircommits = await getCommitCount(THEIR_USERNAME, from, to)
     return (
         <main>
             <h1 className="text-2xl font-bold mb-6">
@@ -11,11 +13,23 @@ export default async function MetricsPage() {
             </h1>
             <p>My commits: {mycommits}</p>
             <p>Their commits: {theircommits}</p>
+            <section className="mt-12">
+      <h2 className="text-xl font-semibold mb-4">
+       GitHub Activity
+     </h2>
 
+     <div className="overflow-x-auto rounded-lg border border-gray-800 p-4">
+     <img
+      src="https://ghchart.rshah.org/50abab5/SulaimanKhydyrDUKE"
+      alt="GitHub contribution chart"
+     />
+    </div>
+    
+    </section>
         </main>
     )
-
 }
+
 
 async function getCommitCount(
     username: string, 
