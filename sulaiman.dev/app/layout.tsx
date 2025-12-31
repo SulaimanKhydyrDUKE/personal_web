@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css"
+import Header from "./components/header";
 
-export const metadata = {
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
   title: "Sulaiman Khydyr uulu",
   description: "Builder. Writer. CS + Math @ Duke.",
 }
@@ -13,10 +24,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="bg-white text-gray-900">
+    <html lang="en" className="scroll-smooth">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}>
         <div className="max-w-3xl mx-auto px-6 py-12">
-          {children}
+          <Header />
+          <main>{children}</main>
         </div>
       </body>
     </html>

@@ -1,50 +1,39 @@
-import Link from "next/link"
 import Image from "next/image"
 
 export default function Home() {
   return (
-    <main>
-      <div className="flex items-start gap-4">
-      <Image
-      src="/profilephoto.png"
-      alt="Sulaiman Khydyr"
-      width={96}
-      height={96}
-      className="rounded-full flex-shrink-0"/>
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight">
-        Sulaiman Khydyr
-        </h1>
-        <p className="mt-4 text-lg text-gray-400">
-        CS + Math @ Duke University. I build algorithms and write about technology, motivations, and education.  
-        
-        </p>
+    <div className="space-y-12">
+      <section className="flex flex-col-reverse md:flex-row items-start gap-8">
+        <div className="flex-1 space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Sulaiman Khydyr
+          </h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
+            CS + Math @ Duke University. I build algorithms and write about technology, motivations, and education.  
+          </p>
+        </div>
+        <Image
+          src="/profilephoto.png"
+          alt="Sulaiman Khydyr"
+          width={112}
+          height={112}
+          className="rounded-full grayscale hover:grayscale-0 transition-all duration-300"
+          priority
+        />
+      </section>
 
-
-      </div>
-      </div>
-      <section className="mt-12">
-      <h2 className="text-xl font-semibold mb-4">
-       GitHub Activity
-     </h2>
-
-     <div className="overflow-x-auto rounded-lg border border-gray-800 p-4">
-     <img
-      src="https://ghchart.rshah.org/50abab5/SulaimanKhydyrDUKE"
-      alt="GitHub contribution chart"
-     />
+      <section>
+        <h2 className="text-xl font-semibold mb-6">
+          GitHub Activity
+        </h2>
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 p-6 bg-gray-50/50 dark:bg-gray-900/50">
+          <img
+            src="https://ghchart.rshah.org/50abab5/SulaimanKhydyrDUKE"
+            alt="GitHub contribution chart"
+            className="w-full h-auto dark:invert dark:hue-rotate-180"
+          />
+        </div>
+      </section>
     </div>
-    </section>
-
-      <nav className="mt-6 flex gap-6 text-sm font-medium">
-        <Link href="/projects">Projects</Link>
-        <Link href="/writing">Writing</Link>
-        <a href="https://github.com/SulaimanKhydyrDUKE" target="_blank">GitHub</a>
-        <a href="https://www.youtube.com/@sulaimankhydyruulu1671" target="_blank">YouTube</a>
-      </nav>
-
-
-
-    </main>
   )
 }
