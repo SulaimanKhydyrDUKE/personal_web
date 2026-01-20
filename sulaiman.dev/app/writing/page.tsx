@@ -14,7 +14,12 @@ export default function Writing() {
         {posts.map((post) => (
           <article key={post.slug} className="group relative flex flex-col items-start">
             <h2 className="text-xl font-semibold tracking-tight">
-              <Link href={post.href} target="_blank" className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              <Link
+                href={post.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
                 {post.title}
               </Link>
             </h2>
@@ -30,6 +35,7 @@ export default function Writing() {
             <Link 
               href={post.href} 
               target="_blank" 
+              rel="noopener noreferrer"
               className="mt-4 flex items-center text-sm font-medium text-gray-900 dark:text-gray-100 hover:underline"
             >
               Read article
