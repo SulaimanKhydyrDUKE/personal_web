@@ -29,9 +29,13 @@ export default function Home() {
      </h2>
 
      <div className="overflow-x-auto rounded-lg border border-gray-800 p-4">
-     <img
+     <Image
       src="https://ghchart.rshah.org/50abab5/SulaimanKhydyrDUKE"
       alt="GitHub contribution chart"
+      width={720}
+      height={112}
+      sizes="100vw"
+      className="h-auto w-full"
      />
     </div>
     

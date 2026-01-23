@@ -5,7 +5,7 @@ export default function Projects() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
         <p className="mt-2 text-gray-500 dark:text-gray-400">
-          A selection of things I've built, from LLM agents to low-level compilers.
+          A selection of things I&apos;ve built, from LLM agents to low-level compilers.
         </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-1">
@@ -81,4 +81,3 @@ const projects = [
     tags: ["Hardware", "Robotics", "Experimental"]
   }
 ]
-

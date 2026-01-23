@@ -7,13 +7,14 @@ export default function Header() {
         sulaiman.dev
       </Link>
       <nav className="flex gap-6 text-sm font-medium text-gray-500">
-        <Link href="/projects" className="hover:text-black dark:hover:text-white transition-colors">Projects</Link>
+        <Link href="/projectos" className="hover:text-black dark:hover:text-white transition-colors">Projects</Link>
         <Link href="/writing" className="hover:text-black dark:hover:text-white transition-colors">Writing</Link>
         <a 
           href="https://github.com/SulaimanKhydyrDUKE" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="hover:text-black dark:hover:text-white transition-colors"
+          className="hover:text-black dark:hover:text-white transition-colors
+          "
         >
           GitHub
         </a>
