@@ -1,5 +1,3 @@
-import Image from "next/image"
-
 type CommitResult = {
   count: number | null
   error?: string
@@ -61,12 +59,13 @@ export default async function MetricsPage() {
         </h2>
 
         <div className="overflow-x-auto rounded-lg border border-gray-800 p-4">
-          <Image
+          <img
             src="https://ghchart.rshah.org/50abab5/SulaimanKhydyrDUKE"
             alt="GitHub contribution chart == Can I be consistent for 365 days?"
             width={720}
             height={112}
-            sizes="100vw"
+            loading="lazy"
+            decoding="async"
             className="h-auto w-full"
           />
         </div>
