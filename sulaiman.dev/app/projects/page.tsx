@@ -63,21 +63,21 @@ function ProjectCard({
 
 const projects = [
   {
-    title: "BlueBot",
-    description: "LLM-powered campus assistant built during Code+ at Duke. Utilizes MCP servers for real-time Duke data access.",
-    href: "https://gitlab.oit.duke.edu/codeplus/co-curricular-ai-chatbot/-/tree/main",
-    tags: ["LLM", "TypeScript", "MCP", "Next.js"]
+    title: "Compiler",
+    description: "Custom programming language with matrix and vector types, built to serve students and researchers working on linear algebra-heavy problems.",
+    href: "REPLACE_WITH_GITHUB_URL",
+    tags: ["Python", "C", "Linear Algebra"]
   },
   {
-    title: "MyCompiler",
-    description: "A low-level compiler built to understand the inner workings of lexical analysis, parsing, and code generation.",
-    href: "https://github.com/SulaimanKhydyrDUKE/MyCompiler",
-    tags: ["C++", "Compilers", "Assembly"]
+    title: "Task Tracker App",
+    description: "Goal-tracking app for people building daily habits, with social features that let friends add shared tasks.",
+    href: "REPLACE_WITH_GITHUB_URL",
+    tags: ["SwiftUI", "MongoDB", "AWS"]
   },
   {
-    title: "AssWhooper4070",
-    description: "Biological arm capable of giving a fast and reliable asswhooping. BicLYft Capacity: 100lbs. (A fun experimental side project)",
-    href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    tags: ["Hardware", "Robotics", "Experimental"]
+    title: "Campus Chatbot",
+    description: "LLM-driven campus assistant for the Duke community, designed to answer student and staff questions using trusted university data.",
+    href: "REPLACE_WITH_GITHUB_URL",
+    tags: ["LLM", "RAG", "MCP", "FastAPI"]
   }
 ]
