@@ -65,19 +65,19 @@ const projects = [
   {
     title: "Compiler",
     description: "Custom programming language with matrix and vector types, built to serve students and researchers working on linear algebra-heavy problems.",
-    href: "REPLACE_WITH_GITHUB_URL",
+    href: "https://github.com/SulaimanKhydyrDUKE/MyCompiler",
     tags: ["Python", "C", "Linear Algebra"]
   },
   {
     title: "Task Tracker App",
     description: "Goal-tracking app for people building daily habits, with social features that let friends add shared tasks.",
-    href: "REPLACE_WITH_GITHUB_URL",
+    href: "https://github.com/SulaimanKhydyrDUKE/treadmill",
     tags: ["SwiftUI", "MongoDB", "AWS"]
   },
   {
     title: "Campus Chatbot",
     description: "LLM-driven campus assistant for the Duke community, designed to answer student and staff questions using trusted university data.",
-    href: "REPLACE_WITH_GITHUB_URL",
+    href: "https://gitlab.oit.duke.edu/codeplus/co-curricular-ai-chatbot/-/tree/main",
     tags: ["LLM", "RAG", "MCP", "FastAPI"]
   }
 ]
