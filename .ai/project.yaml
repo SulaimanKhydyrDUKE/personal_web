@@ -1,0 +1,35 @@
+schema_version: 1
+project: sulaiman.dev
+status: active
+maturity: production
+working_directory: sulaiman.dev
+
+commands:
+  setup: npm ci
+  checks:
+    - npm run lint
+    - npx tsc --noEmit
+    - npm run build
+
+automation:
+  implementation_enabled: true
+  requires_ready_label: true
+  max_concurrent_tasks: 1
+  max_repair_attempts: 2
+  human_merge_required: true
+  automatic_deploy: false
+
+forbidden_without_owner_approval:
+  - production deployment
+  - destructive migrations or data changes
+  - adding paid services
+  - changing authentication or authorization semantics
+  - changing privacy or data-retention policy
+  - inventing or materially rewriting biographical claims
+
+evidence:
+  acceptance_criteria_matrix: required
+  command_results: required
+  changed_files: required
+  assumptions_and_risks: required
+  screenshots_for_ui_changes: required
