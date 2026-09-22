@@ -36,13 +36,13 @@ export const projects: Project[] = [
     tags: ["Python", "Playwright", "LLM"],
   },
   {
-    title: "Linear Algebra Compiler",
-    summary: "A C-core language with first-class matrices and vectors.",
+    title: "MyLang Compiler",
+    summary: "A small language with first-class integer matrices, built to learn how compilers work.",
     description:
-      "Wrote a C-core language with first-class matrix and vector types, and built a compiler for it, to serve students and researchers working on linear algebra-heavy problems.",
+      "A toy language with immutable integers, strings, booleans and integer matrices (transpose, row reduction, invertibility, null space). Built the lexer, recursive-descent parser, type checker, tree-walking interpreter and a Python code-generation backend, with tests that require both paths to print identical output.",
     href: "https://github.com/SulaimanKhydyrDUKE/MyCompiler",
-    period: "Oct 2025",
-    tags: ["Python", "C", "Linear Algebra"],
+    period: "Oct 2025 – Present",
+    tags: ["Python", "Compilers", "Linear Algebra"],
   },
   {
     title: "DukeGPT",
@@ -54,10 +54,43 @@ export const projects: Project[] = [
     tags: ["LLM", "RAG", "MCP", "FastAPI"],
   },
   {
-    title: "Task Tracker App",
-    summary: "Habit tracking with shared tasks between friends.",
+    title: "TREADMILL",
+    summary: "Habit tracking with friends who can follow you and suggest tasks.",
     description:
-      "Goal-tracking app for people building daily habits, with social features that let friends add shared tasks.",
-    tags: ["SwiftUI", "MongoDB", "AWS"],
+      "SwiftUI habit app that pairs daily goals with long-term vision goals, a streak grid per goal, and a community layer for follow invites, advice and goal suggestions. Data lives on-device in SwiftData; an AWS backend (Cognito, DynamoDB, HTTP API, Terraform) is built but not yet wired to the app.",
+    period: "Dec 2025 – Jan 2026",
+    tags: ["SwiftUI", "SwiftData", "AWS"],
+  },
+  {
+    title: "MyCopy",
+    summary: "A consent-first, always-disclosed AI copy of a creator, shareable by link or embed.",
+    description:
+      "A creator defines an approved voice, knowledge set and boundaries; visitors chat with the copy at a public page or inside an iframe. Every conversation states it is AI, answers only from approved facts, and hands off instead of committing. Next.js with a moderated, rate-limited server-side chat route.",
+    period: "Jul 2026 – Present",
+    tags: ["Next.js", "TypeScript", "OpenAI"],
+  },
+  {
+    title: "Farm Drone Survey",
+    summary: "Autonomous agricultural drone simulation from field discovery to a live dashboard.",
+    description:
+      "Discovers real farm fields from OpenStreetMap, plans a lawnmower survey path fitted to the field, flies it in offboard mode in PX4 SITL and Gazebo through ROS 2, logs GPS-tagged camera frames, and shows fields, path, captures and images on a Streamlit dashboard.",
+    period: "Jun 2026",
+    tags: ["ROS 2", "PX4", "Python"],
+  },
+  {
+    title: "Kyrgyz Speech Data Portfolio",
+    summary: "Spec-first speech data work for Kyrgyz: conventions, annotation schema, tooling.",
+    description:
+      "Transcription conventions with numbered decision rules, an annotation schema with behaviourally anchored rating scales, a recording protocol, EN→KY localization notes on vowel harmony and agglutinative placeholders, and a single-file browser annotation tool that enforces both specs at export. Built so that consistency is measurable rather than asserted.",
+    period: "Jul 2026",
+    tags: ["Speech data", "Localization", "Kyrgyz"],
+  },
+  {
+    title: "Paragraph Similarity API",
+    summary: "FastAPI service that finds similar and near-duplicate paragraphs.",
+    description:
+      "Embeds paragraphs with OpenAI and finds similar chunks or duplicate pairs by cosine similarity, narrowing candidates with a binary search over projections onto a reference vector before exact scoring. Tested with fixed vectors so the suite never calls the model.",
+    period: "Apr 2026",
+    tags: ["FastAPI", "Embeddings", "Python"],
   },
 ]
