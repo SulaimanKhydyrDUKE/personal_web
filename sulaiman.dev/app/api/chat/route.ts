@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import type { NextRequest } from "next/server"
-import { NOTIFY_TOOL, SEND_MESSAGE_TOOL, buildSystemPrompt } from "@/app/lib/chat-context"
-import { deliverMessage, type DeliveryResult } from "@/app/lib/contact"
+import { SEND_MESSAGE_TOOL, buildSystemPrompt } from "@/app/lib/chat-context"
+import { deliverMessage } from "@/app/lib/contact"
 import { rateLimit } from "@/app/lib/rate-limit"
 
 export const runtime = "nodejs"
@@ -11,15 +11,9 @@ const MODEL = process.env.CHAT_MODEL ?? "claude-opus-5"
 const MAX_MESSAGES = 40
 const MAX_MESSAGE_CHARS = 4000
 const MAX_TOTAL_CHARS = 40_000
-/** Model turns per request: a reply, plus room for a tool call and its follow-up. */
+/** Model turns per request: a reply, plus room for one tool call and its follow-up. */
 const MAX_TURNS = 4
 const RATE_LIMIT = { limit: 20, windowMs: 10 * 60 * 1000 }
-/** Emails a single visitor can trigger, and the instance-wide ceiling, per hour. */
-const EMAIL_LIMIT_PER_IP = { limit: 3, windowMs: 60 * 60 * 1000 }
-const EMAIL_LIMIT_GLOBAL = { limit: 40, windowMs: 60 * 60 * 1000 }
-/** How much of the conversation rides along with a heads-up email. */
-const TRANSCRIPT_MESSAGES = 10
-const TRANSCRIPT_CHARS_PER_MESSAGE = 700
 
 // Built once per server instance; it is the cached prefix of every request.
 const SYSTEM_PROMPT = buildSystemPrompt()
@@ -27,7 +21,7 @@ const SYSTEM_PROMPT = buildSystemPrompt()
 const sendMessageTool = {
   name: SEND_MESSAGE_TOOL,
   description:
-    "Email Sulaiman a message written by the website visitor, in their own words. Call only after you have the visitor's name, a way to reply, and the message text, and the visitor has confirmed what they want sent.",
+    "Send a message from the website visitor to Sulaiman. Call only after you have the visitor's name, a way to reply, and the message text, and the visitor has confirmed what they want sent.",
   strict: true,
   input_schema: {
     type: "object" as const,
@@ -37,29 +31,6 @@ const sendMessageTool = {
       message: { type: "string", description: "The message to deliver, in the visitor's own words." },
     },
     required: ["sender_name", "sender_contact", "message"],
-    additionalProperties: false,
-  },
-} satisfies Anthropic.Beta.BetaTool
-
-const notifyTool = {
-  name: NOTIFY_TOOL,
-  description:
-    "Email Sulaiman a heads-up that you write yourself, when a conversation contains something he would want to see promptly (hiring or collaboration interest, an availability question the facts cannot answer, a broken-site report, anything time-sensitive). The recent conversation is attached automatically. At most once per conversation. Do not use it for questions the facts already answer or for small talk.",
-  strict: true,
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      subject: { type: "string", description: "A specific subject line, under 100 characters." },
-      summary: {
-        type: "string",
-        description: "What the visitor said, what they want, and why it matters to Sulaiman. Include any contact details or names they volunteered.",
-      },
-      visitor_contact: {
-        type: "string",
-        description: "The visitor's email or handle if they gave one; an empty string otherwise.",
-      },
-    },
-    required: ["subject", "summary", "visitor_contact"],
     additionalProperties: false,
   },
 } satisfies Anthropic.Beta.BetaTool
@@ -121,65 +92,22 @@ function isAbort(error: unknown): boolean {
   return error instanceof Error && error.name === "AbortError"
 }
 
-/** Plain-text excerpt of the conversation for heads-up emails. */
-function transcriptExcerpt(messages: IncomingMessage[]): string {
-  return messages
-    .slice(-TRANSCRIPT_MESSAGES)
-    .map((m) => {
-      const text = m.content.length > TRANSCRIPT_CHARS_PER_MESSAGE ? `${m.content.slice(0, TRANSCRIPT_CHARS_PER_MESSAGE)}…` : m.content
-      return `${m.role === "user" ? "Visitor" : "Assistant"}: ${text}`
-    })
-    .join("\n\n")
-}
-
-function str(value: unknown): string {
-  return typeof value === "string" ? value : ""
-}
-
-function describeDelivery(result: DeliveryResult, what: string): { ok: boolean; content: string } {
-  if (result.ok) return { ok: true, content: `Delivered by ${result.channel}. Sulaiman will see the ${what}.` }
-  if (result.reason === "not_configured") {
-    return { ok: false, content: `Email delivery is not set up on this deployment. The ${what} was NOT sent.` }
-  }
-  if (result.reason === "invalid") return { ok: false, content: `The ${what} was empty or malformed and was NOT sent.` }
-  return { ok: false, content: `Delivery failed. The ${what} was NOT sent.` }
-}
-
-type ToolContext = { ip: string; page: string | null; transcript: string }
-
-async function runTool(use: Anthropic.Beta.BetaToolUseBlock, ctx: ToolContext): Promise<{ ok: boolean; content: string }> {
-  if (use.name !== SEND_MESSAGE_TOOL && use.name !== NOTIFY_TOOL) {
+async function runTool(use: Anthropic.Beta.BetaToolUseBlock, page: string | null) {
+  if (use.name !== SEND_MESSAGE_TOOL) {
     return { ok: false, content: `Unknown tool ${use.name}.` }
   }
-
-  // Both tools send email, so both share the per-visitor and instance-wide caps.
-  const perIp = rateLimit(`email:${ctx.ip}`, EMAIL_LIMIT_PER_IP)
-  const global = rateLimit("email:global", EMAIL_LIMIT_GLOBAL)
-  if (!perIp.ok || !global.ok) {
-    return { ok: false, content: "Email limit reached for now. Nothing was sent; suggest LinkedIn instead." }
-  }
-
-  const input = use.input as Record<string, unknown>
-  if (use.name === SEND_MESSAGE_TOOL) {
-    const result = await deliverMessage({
-      kind: "message",
-      senderName: str(input.sender_name),
-      senderContact: str(input.sender_contact),
-      message: str(input.message),
-      page: ctx.page,
-    })
-    return describeDelivery(result, "message and the reply contact")
-  }
-
+  const input = use.input as { sender_name?: unknown; sender_contact?: unknown; message?: unknown }
   const result = await deliverMessage({
-    kind: "notification",
-    subject: str(input.subject),
-    summary: str(input.summary),
-    visitorContact: str(input.visitor_contact) || null,
-    transcript: ctx.transcript,
-    page: ctx.page,
+    senderName: typeof input.sender_name === "string" ? input.sender_name : "",
+    senderContact: typeof input.sender_contact === "string" ? input.sender_contact : "",
+    message: typeof input.message === "string" ? input.message : "",
+    page,
   })
-  return describeDelivery(result, "heads-up")
+  if (result.ok) return { ok: true, content: "Delivered. Sulaiman will see the message and the reply contact." }
+  if (result.reason === "not_configured") {
+    return { ok: false, content: "Message delivery is not set up on this deployment. The message was NOT sent." }
+  }
+  return { ok: false, content: "Delivery failed. The message was NOT sent." }
 }
 
 export const NOT_CONFIGURED_MESSAGE = "The assistant isn't configured on this deployment yet."
@@ -188,8 +116,7 @@ export async function POST(request: NextRequest) {
   // Say so plainly instead of letting the SDK throw a 500 from the constructor.
   if (!process.env.ANTHROPIC_API_KEY) return json({ error: NOT_CONFIGURED_MESSAGE }, 503)
 
-  const ip = clientIp(request)
-  const limit = rateLimit(`chat:${ip}`, RATE_LIMIT)
+  const limit = rateLimit(`chat:${clientIp(request)}`, RATE_LIMIT)
   if (!limit.ok) {
     return json(
       { error: "Too many messages in a short time. Please try again in a few minutes." },
@@ -205,8 +132,8 @@ export async function POST(request: NextRequest) {
     parsed = null
   }
   if (!parsed) return json({ error: "Invalid request." }, 400)
+  const { page } = parsed
 
-  const toolContext: ToolContext = { ip, page: parsed.page, transcript: transcriptExcerpt(parsed.messages) }
   const client = new Anthropic()
   const messages: Anthropic.Beta.BetaMessageParam[] = parsed.messages.map((m) => ({ role: m.role, content: m.content }))
   const encoder = new TextEncoder()
@@ -224,7 +151,7 @@ export async function POST(request: NextRequest) {
               fallbacks: "default",
               output_config: { effort: "low" },
               system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-              tools: [sendMessageTool, notifyTool],
+              tools: [sendMessageTool],
               messages,
             },
             { signal: request.signal },
@@ -248,7 +175,7 @@ export async function POST(request: NextRequest) {
           const results: Anthropic.Beta.BetaToolResultBlockParam[] = []
           for (const use of toolUses) {
             emit({ type: "tool", name: use.name, status: "start" })
-            const outcome = await runTool(use, toolContext)
+            const outcome = await runTool(use, page)
             emit({ type: "tool", name: use.name, status: outcome.ok ? "ok" : "error" })
             results.push({ type: "tool_result", tool_use_id: use.id, content: outcome.content, is_error: !outcome.ok })
           }
