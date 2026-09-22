@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sulaiman.dev
 
-## Getting Started
+Sulaiman Khydyr's portfolio: a Next.js 16 App Router site with React 19, TypeScript, and Tailwind CSS 4, deployed on Vercel.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm ci
+cp .env.example .env.local   # then fill in what you need
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Checks that must pass before a change is done:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Where things live
 
-## Learn More
+| Path | What |
+|---|---|
+| `app/data/site.ts`, `experience.ts`, `projects.ts` | The only source of public facts. Nothing biographical is hard-coded in components. |
+| `app/page.tsx`, `app/projects/`, `app/writing/` | Routes. |
+| `app/components/` | UI: header nav, command palette (⌘K), theme toggle, contribution graph, experience timeline, chat widget. |
+| `app/lib/github.ts` | Contribution calendar and latest-commit fetches, revalidated hourly, with public fallbacks. |
+| `app/lib/chat-context.ts` | Builds the assistant's system prompt from the data files above. |
+| `app/api/chat/route.ts` | Streams assistant replies and runs its one tool, `send_message_to_sulaiman`. |
+| `app/lib/contact.ts` | Delivers a visitor's message by email (Resend) or webhook. |
+| `app/opengraph-image.tsx`, `sitemap.ts`, `robots.ts` | Social card, sitemap, and crawler rules. |
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See `.env.example`. In short:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `ANTHROPIC_API_KEY` powers the chat assistant. Locally an `ant auth login` profile also works. Without either, the widget shows "The assistant isn't configured on this deployment yet."
+- `CHAT_MODEL` overrides the model (default `claude-opus-5`).
+- `RESEND_API_KEY` + `CONTACT_TO_EMAIL` deliver visitor messages by email; `CONTACT_WEBHOOK_URL` is an alternative or fallback. With neither set, the assistant tells the visitor the message was not sent.
+- `GITHUB_TOKEN` raises GitHub API limits for the contribution graph; optional.
+- `NEXT_PUBLIC_SITE_URL` sets the canonical origin for metadata and the sitemap once the custom domain is live.
 
-## Deploy on Vercel
+## The chat assistant
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The floating button (and "Message Sulaiman" in the command palette) opens an assistant that answers only from the data files and can pass a message to Sulaiman. Requests are rate-limited per IP (20 per 10 minutes per server instance), capped at 40 turns and 4,000 characters per message, and the system prompt is prompt-cached. Visitor messages are processed by Anthropic's API; the widget says so.
