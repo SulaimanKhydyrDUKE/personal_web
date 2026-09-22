@@ -16,6 +16,7 @@ Present an accurate, fast, accessible, and polished account of Sulaiman's work, 
 2. Review experience, publications, education, skills, and selected projects.
 3. Follow verified links to source code, publications, profiles, and contact surfaces.
 4. Use the site comfortably on mobile or desktop, with keyboard and assistive technology.
+5. Ask the on-site assistant about Sulaiman, or leave him a message through it, without the assistant inventing anything beyond the data files.
 
 ## Product principles
 
@@ -35,6 +36,7 @@ Present an accurate, fast, accessible, and polished account of Sulaiman's work, 
 - `/`: primary portfolio.
 - `/projects`: expanded project list.
 - `/writing`: writing surface.
+- `/api/chat`: the assistant's streaming endpoint. It answers only from `app/data/*.ts` and can deliver a visitor's message to Sulaiman when delivery is configured.
 - `/private`: if present, this is an undocumented metrics page. Its name is not an access-control mechanism. Do not expose additional information, remove it, or add authentication until the owner decides its intended lifecycle.
 
 ## Non-goals

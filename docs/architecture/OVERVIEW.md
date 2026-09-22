@@ -24,12 +24,14 @@ All Node.js commands run from `sulaiman.dev/`.
 - The local refactor also introduces GitHub integration code under `sulaiman.dev/app/lib/`.
 - Global design tokens and component styling live in `sulaiman.dev/app/globals.css`.
 - Static assets live in `sulaiman.dev/public/`.
+- The chat assistant is a route handler at `sulaiman.dev/app/api/chat/route.ts` (streams newline-delimited JSON, one tool: `send_message_to_sulaiman`), fed by `app/lib/chat-context.ts` (system prompt built from the data modules), `app/lib/contact.ts` (email via Resend or a JSON webhook), and `app/lib/rate-limit.ts` (per-instance sliding window). The client is `app/components/chat-widget.tsx`.
+- Absolute URLs (metadata, sitemap, JSON-LD) come from `app/lib/site-url.ts`, which reads `NEXT_PUBLIC_SITE_URL`, then Vercel's production URL, then localhost.
 
 ## Architectural boundaries
 
 - Prefer server components unless interactivity requires a client component.
 - When data modules exist, keep biographical content there rather than duplicating it in components.
-- Keep secrets and authenticated API calls server-side.
+- Keep secrets and authenticated API calls server-side. The Anthropic, Resend, and webhook credentials are read only inside the chat route and `app/lib/contact.ts`.
 - Third-party GitHub data is enhancement, not a prerequisite for core rendering.
 - Avoid new state-management, database, CMS, analytics, or UI dependencies without a specification that justifies them.
 
